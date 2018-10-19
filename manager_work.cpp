@@ -1,0 +1,724 @@
+#include"library.h"
+void reader_save()//新增读者
+{
+	Reader *preader_register,*p=reader_head;
+	printf("是否继续操作？按N退出！按任意键进入\n");
+	scanf("%c",&charflag);
+	if(charflag=='N')
+	{
+		system("cls");
+	}
+	else
+	{
+		preader_register=(Reader *)malloc(sizeof(Reader));
+		while(1)
+    	{
+    		printf("请选择身份:1.学生  2.非在校生\n请选择:");
+    		scanf("%d",&preader_register->identity_select);
+			fflush(stdin);
+    		if((preader_register->identity_select!=1)&&(preader_register->identity_select!=2))
+    		{
+    			printf("输入有误，请重新输入！\n");
+    		}
+    		else
+    		{
+   		    	break;
+    		}
+    	}
+    	printf("姓名:");
+    	scanf("%s",preader_register->name);
+    	printf("校园卡号:");
+    	scanf("%s",preader_register->ID);
+        fflush(stdin);
+    	while(1)
+    	{
+    		printf("性别:(M代表男，W代表女)");
+    		scanf("%c",&preader_register->sex);
+	        fflush(stdin);
+    		if((preader_register->sex=='M')||(preader_register->sex=='W'))
+    		{
+    			break;
+    		}
+    		else
+    		{
+    			printf("输入有误，请重新输入！\n");
+    		}
+    	}
+        printf("电话:");
+        scanf("%s",preader_register->tel);
+        printf("所在院系:");
+        scanf("%s",preader_register->faculty);
+        printf("所在班级:");
+        scanf("%s",preader_register->clas);
+        printf("校园卡密码:");
+        scanf("%s",preader_register->pw);
+        preader_register->num=0;
+        if(preader_register->identity_select==1)
+		{
+			preader_register->limit=student_num;
+		}
+        else
+		{
+    	    preader_register->limit=other_num;
+		}
+        preader_register->borrow=NULL;
+        preader_register->next=NULL;//信息输入完毕
+     	fflush(stdin);
+        printf("是否注册保存？按Y继续\n");
+    	scanf("%c",&charflag);
+    	if(charflag=='Y')
+		{
+	    	while(p!=NULL)
+			{
+				if(strcmp(p->ID,preader_register->ID)==0)
+				{
+					printf("该ID已经存在！！\n");
+                    system("pause");
+            	    system("cls");
+	                fflush(stdin);//在函数结尾加入，防止干扰其他函数的运行
+					return;
+				}
+		    	p=p->next;
+			}
+			p=reader_head;
+	    	while(p->next!=NULL)
+			{
+				p=p->next;
+			}
+        	p->next=preader_register;
+            preader_register->next=NULL;//将新增图书加入图书链表中
+        	reader_num++;
+        	freader_save();
+        	data_save();
+            printf("保存成功！\n");
+		}
+	    fflush(stdin);//在函数结尾加入，防止干扰其他函数的运行
+    	system("pause");
+	    system("cls");
+	}
+}
+
+void manager_save()//新增管理员
+{
+	char ID[20];
+	intflag=0;
+	printf("是否继续操作？按N退出！按任意键进入\n");
+	scanf("%c",&charflag);
+	fflush(stdin);
+	if(charflag=='N')
+	{
+		system("cls");
+	}
+	else
+	{
+		while(1)
+		{
+            Reader *manager,*p=reader_head,*pp=manager_head;
+			printf("请输入需要添加的管理员的ID:");
+			gets(ID);
+	    	while(p!=NULL)
+            {
+            	if(strcmp(p->ID,ID)==0)
+	            {
+	            	manager=(Reader *)malloc(sizeof(Reader));
+	        	    *manager=*p;
+	        	    while(pp!=NULL)
+    	            {
+			        	if(strcmp(pp->ID,manager->ID)==0)
+						{
+				        	printf("该ID已经存在！！\n");
+                            system("pause");
+            	            system("cls");
+	                        fflush(stdin);//在函数结尾加入，防止干扰其他函数的运行
+				        	return;
+						}
+    	            	pp=pp->next;
+    	            }
+					pp=manager_head;
+					while(pp->next!=NULL)
+					{
+						pp=pp->next;
+					}
+    	            pp->next=manager;
+    	            manager->next=NULL;//将新增图书加入图书链表中
+    	            manager_num++;
+    	        	fmanager_save();
+    	        	data_save();
+    	        	intflag=1;
+    	        	break;
+	            }
+	            p=p->next;
+            }
+            if(intflag!=1)
+            	printf("无此ID,请重新输入!\n");
+            else
+                break;
+		}
+    	printf("保存成功！\n");
+    	fflush(stdin);//在函数结尾加入，防止干扰其他函数的运行
+    	system("pause");
+    	system("cls");
+	}
+}
+
+void book_save()//新增图书
+{
+	Book *book,*p=book_head;
+	printf("是否继续操作？按N退出！按任意键进入\n");
+	scanf("%c",&charflag);
+	if(charflag=='N')
+	{
+		system("cls");
+	}
+	else
+	{
+		book=(Book *)malloc(sizeof(Book));
+		printf("编号:");
+		gets(book->num);
+		printf("书名:");
+		gets(book->title);
+		printf("作者:");
+		gets(book->author);
+		printf("价格:");
+		scanf("%f",&book->price);
+		printf("出版社:");
+		getchar();
+		gets(book->publisher);
+		printf("类别:");
+		gets(book->category);
+		printf("购书时间:");
+		gets(book->time);
+		book->state=1;
+		book->next=NULL;//信息输入完成
+		printf("是否注册保存？按Y继续\n");
+		scanf("%c",&charflag);
+		if(charflag=='Y')
+        {
+        	if(book_num==0)
+		    {
+		    	book_head=book;
+		    	book->next=NULL;//将第一本图书作为头结点
+			    book_num++;
+			    fbook_save();
+			    data_save();
+		    }
+		    else
+		    {
+		    	while(p!=NULL)
+    	        {
+				    if(strcmp(p->num,book->num)==0)
+					{
+			     		printf("该编号已经存在！！\n");
+                        system("pause");
+            	        system("cls");
+	                    fflush(stdin);//在函数结尾加入，防止干扰其他函数的运行
+				     	return;
+					}
+    	        	p=p->next;
+    	        }
+				p=book_head;
+				while(p->next!=NULL)
+				{
+					p=p->next;
+				}
+    	        p->next=book;
+    	        book->next=NULL;//将新增图书加入图书链表中
+    	    	book_num++;
+    	    	fbook_save();
+    	    	data_save();
+            	printf("保存成功！\n");
+		    }
+        }
+    	fflush(stdin);//在函数结尾加入，防止干扰其他函数的运行
+    	system("pause");
+	    system("cls");
+	}
+}
+
+void system_setting()//系统设置
+{
+	printf("是否继续操作？按N退出！按任意键进入\n");
+	scanf("%c",&charflag);
+	fflush(stdin);
+	if(charflag=='N')
+	{
+		system("cls");
+	}
+	else
+	{
+		printf("是否编写系统通知？按N退出！按任意键进入\n");
+		scanf("%c",&charflag);
+		fflush(stdin);
+		if(charflag!='N')
+	    {
+	    	printf("请开始编写:\n");
+	    	gets(system_information);
+	    }
+	    printf("是否修改读者所借阅图书的数量限制？按N退出！按任意键进入\n");
+	    scanf("%c",&charflag);
+		fflush(stdin);
+		if(charflag!='N')
+	    {
+	    	printf("在校生能借阅图书数量上限:");
+	    	scanf("%d",&student_num);
+	    	printf("非在校生能借阅图书数量上限:");
+	    	scanf("%d",&other_num);
+	    }
+		data_save();
+    	printf("修改完毕!\n");
+	}
+	fflush(stdin);//在函数结尾加入，防止干扰其他函数的运行
+	system("pause");
+	system("cls");
+}
+
+void reader_del()//删除读者
+{
+	char ID[20];
+	Reader *p,*q;
+	intflag=0;
+	printf("是否继续？按N退出！按任意键进入\n");
+	scanf("%c",&charflag);
+	fflush(stdin);
+	if(charflag=='N')
+	{
+		system("cls");
+	}
+	else
+	{
+		printf("请输入要删除的读者的ID:");
+		gets(ID);
+    	q=reader_head;
+		p=reader_head->next;
+		if(strcmp(q->ID,ID)==0)
+		{
+			printf("该读者是最高管理员，不能被删除！\n");
+            system("pause");
+        	system("cls");
+			return;
+		}
+		while(p!=NULL)
+        {
+        	if(strcmp(p->ID,ID)==0)
+	        {
+	        	q->next=p->next;
+	        	free(p);//从链表里删除
+	        	reader_num--;
+	        	freader_save();
+	        	data_save();
+	        	intflag=1;
+				printf("删除成功！！\n");
+				break;
+	        }
+       	    else
+			{
+       	    	q=p;
+		        p=p->next;
+			}
+        }
+        if(intflag!=1)
+        {
+        	printf("该读者不存在!\n");
+        }
+        else
+        {
+            q=manager_head;
+            p=manager_head->next;
+        while(p!=NULL)
+        {
+        	if(strcmp(p->ID,ID)==0)
+	        {
+	        	q->next=p->next;
+	        	free(p);//从链表里删除
+	        	manager_num--;
+	        	fmanager_save();
+	        	data_save();
+                printf("该读者是管理员，也已删除！\n");
+				break;
+	        }
+         	else
+			{
+       	    	q=p;
+		        p=p->next;
+			}
+        }
+		}
+        system("pause");
+    	system("cls");
+	}
+	fflush(stdin);//在函数结尾加入，防止干扰其他函数的运行
+}
+
+void manager_del()//删除管理员
+{
+	char ID[20];
+	Reader *p,*q;
+	intflag=0;
+	printf("是否继续？按N退出！按任意键进入\n");
+	scanf("%c",&charflag);
+	fflush(stdin);
+	if(charflag=='N')
+	{
+		system("cls");
+	}
+	else
+	{
+		printf("请输入要删除的读者的ID:");
+		gets(ID);
+		q=manager_head;
+		p=manager_head->next;
+        if(strcmp(q->ID,ID)==0)
+		{
+			printf("该管理员是最高管理员，不能被删除！\n");
+            system("pause");
+        	system("cls");
+			return;
+		}
+        while(p!=NULL)
+        {
+        	if(strcmp(p->ID,ID)==0)
+	        {
+	        	q->next=p->next;
+	        	free(p);//从链表里删除
+	        	manager_num--;
+	        	fmanager_save();
+	        	data_save();
+                printf("删除成功!\n");
+                intflag=1;
+				break;
+	        }
+         	else
+			{
+        		q=p;
+		        p=p->next;
+			}
+        }
+        if(intflag!=1)
+        {
+        	printf("该管理员不存在!\n");
+        }
+        system("pause");
+    	system("cls");
+	}
+	fflush(stdin);//在函数结尾加入，防止干扰其他函数的运行
+}
+
+void book_del()//删除图书
+{
+	char num[20];
+	Book *p,*q;
+	int intflag=0;
+	printf("是否继续？按N退出！按任意键进入\n");
+	scanf("%c",&charflag);
+	fflush(stdin);
+	if(charflag=='N')
+	{
+		system("cls");
+	}
+	else
+	{
+		if(book_num==0)
+		{
+			printf("无图书存储，请新增图书后再进行此操作！\n");
+			system("pause");
+        	system("cls");
+		}
+		else
+		{
+			printf("请输入要删除的图书的编号:");
+		    gets(num);
+		p=book_head;
+		while(p!=NULL)
+        {
+        	if(strcmp(p->num,num)==0)
+	        {
+	        	if(p==book_head)
+	        	book_head=p->next;
+		        else
+	        	q->next=p->next;
+	        	free(p);//从链表里删除
+	        	book_num--;
+	        	fbook_save();
+	        	data_save();
+	        	intflag=1;
+				printf("删除成功!!!\n");
+				break;
+	        }
+       	else
+       	{
+       		q=p;
+		    p=p->next;
+       	}
+        }
+        if(intflag!=1)
+        {
+        	printf("该图书不存在!\n");
+        }
+        system("pause");
+    	system("cls");
+	}
+	}
+	fflush(stdin);//在函数结尾加入，防止干扰其他函数的运行
+}
+
+
+void reader_change()//修改读者信息
+{
+	char ID[20];
+	Reader *p=reader_head,*q=manager_head;
+	intflag=0;
+	printf("是否继续？按N退出！按任意键进入\n");
+	scanf("%c",&charflag);
+	fflush(stdin);
+	if(charflag=='N')
+	{
+		system("cls");
+	}
+	else
+	{
+		printf("请输入要修改的读者的ID:");
+		gets(ID);
+		while(p!=NULL)
+        {
+        	if(strcmp(p->ID,ID)==0)
+	        {
+	        	intflag=1;
+	        	while(1)
+	        	{
+	        		int cn;
+	                char s[2];
+	                printf("请选择需要修改的选项:(数字代表后面的选项)\n");
+	                printf("1.读者身份及借书限度\n");
+	                printf("2.读者姓名\n");
+	                printf("3.读者帐号\n");
+	                printf("4.读者性别\n");
+	                printf("5.读者电话\n");
+	                printf("6.读者所在院系\n");
+	                printf("7.读者班级\n");
+	                printf("8.读者密码\n");
+	                printf("9.退出\n");
+					fflush(stdin);
+	                while(1)
+	                {
+	                	gets(s);
+	    	            cn=atoi(s);
+	    	            if(cn<1||cn>9)
+	    	                printf("输入错误，重新输入！\n");
+	                	else
+	                    	break;
+	                }
+					system("cls");
+		            switch(cn)
+	            	{
+	            		case 1:
+	            	    while(1)
+	            	    {
+	            	    	printf("请选择身份:1.学生  2.非在校生\n请选择:");
+	            	    	scanf("%d",&p->identity_select);
+							fflush(stdin);
+	            	    	if((p->identity_select!=1)&&(p->identity_select!=2))
+	            	    	{
+    	                		printf("输入有误，请重新输入！\n");
+    	                	}
+    	                	else
+    	                	{
+	            	    		break;
+    	                	}
+	            	    }
+	            	    if(p->identity_select==1)
+	            	    p->limit=student_num;
+	            	    else
+	            	    p->limit=other_num;
+	            	    break;
+	            	    case 2:
+						puts("姓名：");
+	            	    gets(p->name);
+	            	    break;
+	            	    case 3:
+						puts("ID");
+	            	    gets(p->ID);
+	            	    break;
+	            	    case 4:
+						puts("性别:");
+	            	    p->sex=getchar();
+	            	    break;
+	            	    case 5:
+						puts("电话:");
+	            	    gets(p->tel);
+	            	    break;
+	            	    case 6:
+						puts("所在院系:");
+	            	    gets(p->faculty);
+	            	    break;
+	            	    case 7:
+						puts("班级:");
+	            	    gets(p->clas);
+	            	    break;
+	            	    case 8:
+						puts("密码:");
+	            	    gets(p->pw);
+	            	    break;
+	            	    case 9:
+						reader_display(p);
+	                 	freader_save();
+                        while(q!=NULL)
+						{
+                        	if(p->ID==q->ID)
+							{
+    	                    	*q=*p;
+    	                    	fmanager_save();
+							}
+                          	q=q->next;
+						}
+                        printf("修改成功!\n");
+                    	system("pause");
+                     	system("cls");
+                    	fflush(stdin);//在函数结尾加入，防止干扰其他函数的运行
+						return;
+	            	}
+	        	}
+	        }
+	        p=p->next;
+        }
+	}
+    	if(intflag!=1)
+	    {
+	    	printf("该读者不存在!\n");
+	    }
+	fflush(stdin);//在函数结尾加入，防止干扰其他函数的运行
+	system("pause");
+	system("cls");
+}
+
+
+void book_change()//图书信息修改
+{
+	char num[20];
+	Book *p=book_head;
+	intflag=0;
+	printf("是否继续？按N退出！按任意键进入\n");
+	scanf("%c",&charflag);
+	fflush(stdin);
+	if(charflag=='N')
+	{
+		system("cls");
+	}
+	else
+	{
+		printf("请输入要修改的图书的编号:");
+		gets(num);
+		while(p!=NULL)
+        {
+        	if(strcmp(p->num,num)==0)
+	        {
+	        	intflag=1;
+	        	while(1)
+	        	{
+	        		int cn;
+	                char s[2];
+	                printf("请选择需要修改的选项:(数字代表后面的选项)\n");
+	                printf("1.图书编号\n");
+	                printf("2.图书名字\n");
+	                printf("3.图书作者\n");
+	                printf("4.图书价格\n");
+	                printf("5.图书出版社\n");
+	                printf("6.图书类别\n");
+	                printf("7.图书购买时间\n");
+	                printf("8.退出\n");
+					fflush(stdin);
+	                while(1)
+	                {
+	                	gets(s);
+	    	            cn=atoi(s);
+	    	            if(cn<1||cn>8)
+	    	            printf("输入错误，重新输入！\n");
+	                	else
+	                	break;
+	                }
+	                system("cls");
+		            switch(cn)
+	            	{
+	            		case 1:
+	                    printf("图书编号:");
+	            	    gets(p->num);
+	            	    break;
+	            	    case 2:
+	                    printf("图书名字:");
+	            	    gets(p->time);
+	            	    break;
+	             	    case 3:
+	                    printf("图书作者:");
+	            	    gets(p->author);
+	            	    break;
+	            	    case 4:
+                        printf("图书价格:");
+	            	    scanf("%f",&p->price);
+						fflush(stdin);
+	            	    break;
+	            	    case 5:
+                        printf("图书出版社:");
+	            	    gets(p->publisher);
+	            	    break;
+	            	    case 6:
+                        printf("图书类别:");
+	            	    gets(p->category);
+	            	    break;
+	            	    case 7:
+                        printf("图书购买时间:");
+	            	    gets(p->time);
+	            	    break;
+	            	    case 8:
+	            	    book_display(p);
+                     	fbook_save();
+                        printf("修改成功!\n");
+                        system("pause");
+                    	system("cls");
+                      	fflush(stdin);//在函数结尾加入，防止干扰其他函数的运行
+						return;
+					}
+	        	}
+	        }
+	        p=p->next;
+        }
+	}
+	if(intflag!=1)
+	{
+    	printf("该图书不存在!\n");
+	}
+	fflush(stdin);//在函数结尾加入，防止干扰其他函数的运行
+	system("pause");
+	system("cls");
+}
+
+void reader_display(Reader *p)
+{
+	Book *q;
+	printf("身份:");
+	if(p->identity_select==1)
+	printf("在校生\n");
+	else
+	printf("非在校生\n");
+	printf("姓名:%s\n",p->name);
+	printf("校园卡号:%s\n",p->ID);
+	printf("性别:");
+	if(p->sex=='M')
+	printf("男\n");
+	else
+	printf("女\n");
+	printf("电话:%s\n",p->tel);
+	printf("所在院系:%s\n",p->faculty);
+	printf("班级:%s\n",p->clas);
+	printf("所借阅图书的数量:%d\n",p->num);
+	if(p->num!=0)
+	{
+		printf("所借阅的图书为:\n");
+  		q=p->borrow;
+		while(q!=NULL)
+		{
+	    	book_display(q);
+	    	q=q->next;
+		}
+	}
+	system("pause");
+	system("cls");
+}

@@ -1,0 +1,28 @@
+# depslib dependency file v1.0
+1457099184 source:f:\课程设计\library\borrow.cpp
+	"library.h"
+
+1456997250 f:\课程设计\library\library.h
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	<conio.h>
+
+1457007002 source:f:\课程设计\library\data_save.cpp
+	"library.h"
+
+1457178698 source:f:\课程设计\library\main.cpp
+	"library.h"
+
+1457098808 source:f:\课程设计\library\manager_system.cpp
+	"library.h"
+
+1458557326 source:f:\课程设计\library\manager_work.cpp
+	"library.h"
+
+1457098184 source:f:\课程设计\library\return.cpp
+	"library.h"
+
+1458556580 source:f:\课程设计\library\search.cpp
+	"library.h"
+
